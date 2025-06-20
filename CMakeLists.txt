@@ -16,13 +16,13 @@ string(APPEND CMAKE_CXX_FLAGS_RELEASE " -O3 -march=native")
 
 find_package(GTest REQUIRED)
 find_package(magic_enum REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS container)
 
 file(GLOB BOOKDB_HEADERS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/include/*.hpp")
 
 add_library(bookdb STATIC "${CMAKE_SOURCE_DIR}/src/main.cpp" ${BOOKDB_HEADERS})
 target_include_directories(bookdb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(bookdb PUBLIC magic_enum::magic_enum boost::boost)
+target_link_libraries(bookdb PUBLIC magic_enum::magic_enum Boost::container)
 
 add_executable(bookdb_cli src/main.cpp)
 target_link_libraries(bookdb_cli PRIVATE bookdb)

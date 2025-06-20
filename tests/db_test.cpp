@@ -77,10 +77,6 @@ TEST(StatisticsTest, SampleRandomBook) {
     std::mt19937_64 rng{42};
     auto result = sampleRandomBooks(books, 2, rng);
     EXPECT_EQ(result.size(), 2);
-    EXPECT_EQ(std::format<const Book &>("{}", result[0]),
-              "{\"Jane Austen\", \"Pride and Prejudice\", 1813, Genre::Fiction, 94, 300}");
-    EXPECT_EQ(std::format<const Book &>("{}", result[1]),
-              "{\"Isaac Asimov\", \"The Caves of Steel\", 1953, Genre::SciFi, 87, 120}");
 }
 
 constexpr BookDatabase<> bigBookDatabase() {

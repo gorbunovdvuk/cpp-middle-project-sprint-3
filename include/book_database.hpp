@@ -26,10 +26,6 @@ public:
     using AuthorContainer = std::unordered_set<std::string_view, TransparentStringHash, TransparentStringEqual>;
 
     BookDatabase() = default;
-    BookDatabase(const BookDatabase &) = delete;
-    BookDatabase &operator=(const BookDatabase &) = delete;
-    BookDatabase(BookDatabase &&) = delete;
-    BookDatabase &operator=(BookDatabase &&) = delete;
 
     constexpr BookDatabase(std::initializer_list<Book> books) {
         for (auto book : books) {
