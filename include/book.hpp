@@ -1,31 +1,52 @@
 #pragma once
 
+#include <magic_enum/magic_enum.hpp>
 #include <format>
-#include <stdexcept>
 #include <string_view>
 
 namespace bookdb {
 
 enum class Genre { Fiction, NonFiction, SciFi, Biography, Mystery, Unknown };
 
-// Ваш код для constexpr преобразования строк в enum::Genre и наоборот здесь
-
 constexpr Genre GenreFromString(std::string_view s) {
-    // Ваш код здесь
-    return Genre::Unknown;
+    return magic_enum::enum_cast<Genre>(s).value_or(Genre::Unknown);
+}
+
+constexpr std::string_view GenreToString(Genre genre) {
+    return magic_enum::enum_name<Genre>(genre);
 }
 
 struct Book {
-    // string_view для экономии памяти, чтобы ссылаться на оригинальную строку, хранящуюся в другом контейнере
-    std::string_view author;
     std::string title;
+    std::string_view author;
 
     int year;
     Genre genre;
     double rating;
     int read_count;
 
-    // Ваш код для конструкторов здесь
+    constexpr Book(
+        std::string title,
+        std::string_view author,
+        int year, Genre genre,
+        double rating,
+        int read_count
+    ) :
+        title(std::move(title)),
+        author(author),
+        year(year),
+        genre(genre),
+        rating(rating),
+        read_count(read_count) {}
+
+    constexpr Book(
+        std::string title,
+        std::string_view author,
+        int year,
+        std::string_view genre,
+        double rating,
+        int read_count
+    ) : Book(std::move(title), author, year, GenreFromString(genre), rating, read_count) {}
 };
 }  // namespace bookdb
 
@@ -34,22 +55,7 @@ template <>
 struct formatter<bookdb::Genre, char> {
     template <typename FormatContext>
     auto format(const bookdb::Genre g, FormatContext &fc) const {
-        std::string genre_str;
-
-        // clang-format off
-        using bookdb::Genre;
-        switch (g) {
-            case Genre::Fiction:    genre_str = "Fiction"; break;
-            case Genre::Mystery:    genre_str = "Mystery"; break;
-            case Genre::NonFiction: genre_str = "NonFiction"; break;
-            case Genre::SciFi:      genre_str = "SciFi"; break;
-            case Genre::Biography:  genre_str = "Biography"; break;
-            case Genre::Unknown:    genre_str = "Unknown"; break;
-            default:
-                throw logic_error{"Unsupported bookdb::Genre"};
-            }
-        // clang-format on
-        return format_to(fc.out(), "{}", genre_str);
+        return format_to(fc.out(), "{}", magic_enum::enum_name(g));
     }
 
     constexpr auto parse(format_parse_context &ctx) {
@@ -57,6 +63,18 @@ struct formatter<bookdb::Genre, char> {
     }
 };
 
-// Ваш код для std::formatter<Book> здесь
+template<>
+struct formatter<bookdb::Book, char> {
+    template <typename FormatContext>
+    constexpr auto format(const bookdb::Book b, FormatContext &fc) const {
+        return std::format_to(fc.out(),
+            R"({{"{}", "{}", {}, Genre::{}, {}, {}}})",
+            b.author, b.title, b.year, bookdb::GenreToString(b.genre), b.rating, b.read_count);
+    }
+
+    constexpr auto parse(format_parse_context &ctx) const {
+        return ctx.begin();
+    }
+};
 
 }  // namespace std

@@ -10,6 +10,9 @@ class BookDBConan(ConanFile):
     
     def requirements(self):
         self.requires("gtest/1.13.0")
+        self.requires("boost/1.88.0")
+        self.requires("magic_enum/0.9.7")
+        self.requires("benchmark/1.9.1")
         self.tool_requires("cmake/3.30.0")
     
     def layout(self):
