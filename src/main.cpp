@@ -3,8 +3,8 @@
 #include "filters.hpp"
 #include "statistics.hpp"
 
-#include <boost/container/static_vector.hpp>
 #include <algorithm>
+#include <boost/container/static_vector.hpp>
 
 using namespace bookdb;
 

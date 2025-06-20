@@ -15,7 +15,7 @@ bookdb::BookDatabase<> generate_database(size_t size) {
     static constexpr size_t kAuthorSize = 1;
 
     auto random_string = [](size_t size, char a = 'A', char b = 'Z') {
-        return [=](auto& rng) {
+        return [=](auto &rng) {
             std::string result;
             result.reserve(size);
             for (size_t i = 0; i < size; i++) {
@@ -28,19 +28,15 @@ bookdb::BookDatabase<> generate_database(size_t size) {
     std::mt19937 rng;
     bookdb::BookDatabase<> database;
     for (size_t i = 0; i < size; i++) {
-        database.emplace_back(
-            random_string(kAuthorSize)(rng),
-            random_string(kTitleSize)(rng),
-            std::uniform_int_distribution<int>(0, 2025)(rng),
-            bookdb::Genre::Unknown,
-            std::uniform_real_distribution<double>(0.0, 100.0)(rng),
-            std::uniform_int_distribution<int>(0, 100)(rng)
-        );
+        database.emplace_back(random_string(kAuthorSize)(rng), random_string(kTitleSize)(rng),
+                              std::uniform_int_distribution<int>(0, 2025)(rng), bookdb::Genre::Unknown,
+                              std::uniform_real_distribution<double>(0.0, 100.0)(rng),
+                              std::uniform_int_distribution<int>(0, 100)(rng));
     }
     return database;
 }
 
-void BM_AuthorHistogramFlatMap(benchmark::State& state) {
+void BM_AuthorHistogramFlatMap(benchmark::State &state) {
     auto database = generate_database(state.range(0));
     for (auto _ : state) {
         auto result = bookdb::buildAuthorHistogramFlat(database);
@@ -48,7 +44,7 @@ void BM_AuthorHistogramFlatMap(benchmark::State& state) {
     }
 }
 
-void BM_AuthorHistogram(benchmark::State& state) {
+void BM_AuthorHistogram(benchmark::State &state) {
     auto database = generate_database(state.range(0));
     for (auto _ : state) {
         auto result = bookdb::buildAuthorHistogram(database);

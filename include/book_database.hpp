@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "book.hpp"
 #include "concepts.hpp"
 #include "heterogeneous_lookup.hpp"
@@ -27,10 +26,10 @@ public:
     using AuthorContainer = std::unordered_set<std::string_view, TransparentStringHash, TransparentStringEqual>;
 
     BookDatabase() = default;
-    BookDatabase(const BookDatabase&) = delete;
-    BookDatabase& operator=(const BookDatabase&) = delete;
-    BookDatabase(BookDatabase&&) = delete;
-    BookDatabase& operator=(BookDatabase&&) = delete;
+    BookDatabase(const BookDatabase &) = delete;
+    BookDatabase &operator=(const BookDatabase &) = delete;
+    BookDatabase(BookDatabase &&) = delete;
+    BookDatabase &operator=(BookDatabase &&) = delete;
 
     constexpr BookDatabase(std::initializer_list<Book> books) {
         for (auto book : books) {
@@ -43,24 +42,24 @@ public:
         authors_.clear();
     }
 
-    const BookContainer& GetBooks() const { return books_; }
-    const AuthorContainer& GetAuthors() const { return authors_; }
+    const BookContainer &GetBooks() const { return books_; }
+    const AuthorContainer &GetAuthors() const { return authors_; }
 
-    void push_back(const Book& book) {
+    void push_back(const Book &book) {
         books_.push_back(book);
         authors_.emplace(book.author);
     }
 
-    template<typename... Args>
-    requires std::constructible_from<Book, Args...>
-    void emplace_back(Args&&... args) {
-        Book& book = books_.emplace_back(std::forward<Args>(args)...);
+    template <typename... Args>
+        requires std::constructible_from<Book, Args...>
+    void emplace_back(Args &&...args) {
+        Book &book = books_.emplace_back(std::forward<Args>(args)...);
         book.author = *authors_.emplace(book.author).first;
     }
 
     std::size_t size() const { return books_.size(); }
-    auto begin(this auto& self) { return self.books_.begin(); }
-    auto end(this auto& self) { return self.books_.end(); }
+    auto begin(this auto &self) { return self.books_.begin(); }
+    auto end(this auto &self) { return self.books_.end(); }
 
 private:
     BookContainer books_;
