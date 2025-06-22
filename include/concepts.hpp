@@ -29,7 +29,7 @@ concept BookContainerLike = std::ranges::sized_range<BookContainer> &&
 
 
 template <typename T>
-concept BookIterator = std::input_iterator<T> && std::is_same_v<std::iter_value_t<T>, Book>;
+concept BookIterator = std::forward_iterator<T> && std::is_same_v<std::iter_value_t<T>, Book>;
 
 template <typename P>
 concept BookPredicate = std::predicate<P, const Book&>;
