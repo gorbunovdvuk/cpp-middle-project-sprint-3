@@ -9,33 +9,39 @@
 using namespace bookdb;
 
 TEST(StatisticsTest, BuildAuthorHistogramFlatTest) {
-    auto hist = buildAuthorHistogramFlat(BookDatabase<>{
+    using namespace std::string_view_literals;
+
+    auto db = BookDatabase<>{
         {"", "A", 0, Genre::Unknown, 0.0, 0},
         {"", "B", 0, Genre::Unknown, 0.0, 0},
         {"", "A", 0, Genre::Unknown, 0.0, 0},
-    });
+    };
+
+    auto hist = buildAuthorHistogramFlat(db);
     EXPECT_EQ(hist.size(), 2);
     EXPECT_EQ(hist["A"], 2);
     EXPECT_EQ(hist["B"], 1);
 }
 
 TEST(StatisticsTest, CalculateGenreRatingsTest) {
-    auto genre_ratings = calculateGenreRatings(BookDatabase<>{
+    auto db = BookDatabase<>{
         {"", "", 0, Genre::SciFi, 2.0, 0},
         {"", "", 0, Genre::SciFi, 1.0, 0},
         {"", "", 0, Genre::Fiction, 3.0, 0},
-    });
+    };
+    auto genre_ratings = calculateGenreRatings(db);
     EXPECT_EQ(genre_ratings.size(), 2);
     EXPECT_DOUBLE_EQ(genre_ratings[Genre::SciFi], 1.5);
     EXPECT_DOUBLE_EQ(genre_ratings[Genre::Fiction], 3.0);
 }
 
 TEST(StatisticsTest, CalculateAverageRatingTest) {
-    auto average_rating = calculateAverageRating(BookDatabase<>{
+    auto db = BookDatabase<>{
         {"", "", 0, Genre::Unknown, 1.0, 0},
         {"", "", 0, Genre::Unknown, 2.0, 0},
         {"", "", 0, Genre::Unknown, 5.0, 0},
-    });
+    };
+    auto average_rating = calculateAverageRating(db);
     EXPECT_DOUBLE_EQ(average_rating, 8.0 / 3);
 }
 

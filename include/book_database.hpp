@@ -5,7 +5,7 @@
 #include "heterogeneous_lookup.hpp"
 
 #include <print>
-#include <span>
+#include <ranges>
 #include <string_view>
 #include <unordered_set>
 #include <vector>
@@ -23,7 +23,7 @@ public:
     using iterator = typename BookContainer::iterator;
     using const_iterator = typename BookContainer::const_iterator;
 
-    using AuthorContainer = std::unordered_set<std::string, TransparentStringHash, TransparentStringEqual>;
+    using AuthorContainer = std::unordered_set<std::unique_ptr<std::string>, TransparentStringHash, TransparentStringEqual>;
 
     BookDatabase() = default;
 
@@ -39,18 +39,18 @@ public:
     }
 
     const BookContainer &GetBooks() const { return books_; }
-    const AuthorContainer &GetAuthors() const { return authors_; }
+    auto GetAuthors() const { return authors_ | std::views::transform([](const auto &author) { return *author; }); }
 
-    void push_back(const Book &book) {
-        books_.push_back(book);
-        authors_.emplace(book.author);
+    void push_back(const Book &add_book) {
+        Book &book = books_.push_back(add_book);
+        book.author = **authors_.emplace(std::make_unique<std::string>(book.author)).first;
     }
 
     template <typename... Args>
         requires std::constructible_from<Book, Args...>
     void emplace_back(Args &&...args) {
         Book &book = books_.emplace_back(std::forward<Args>(args)...);
-        book.author = *authors_.emplace(book.author).first;
+        book.author = **authors_.emplace(std::make_unique<std::string>(book.author)).first;
     }
 
     std::size_t size() const { return books_.size(); }
