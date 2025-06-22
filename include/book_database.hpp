@@ -23,7 +23,7 @@ public:
     using iterator = typename BookContainer::iterator;
     using const_iterator = typename BookContainer::const_iterator;
 
-    using AuthorContainer = std::unordered_set<std::string_view, TransparentStringHash, TransparentStringEqual>;
+    using AuthorContainer = std::unordered_set<std::string, TransparentStringHash, TransparentStringEqual>;
 
     BookDatabase() = default;
 
