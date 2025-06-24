@@ -3,9 +3,8 @@
 #include "book_database.hpp"
 #include "comparators.hpp"
 
-#include <boost/container/flat_map.hpp>
-
 #include <algorithm>
+#include <flat_map>
 #include <iostream>
 #include <iterator>
 #include <random>
@@ -27,7 +26,7 @@ auto buildAuthorHistogramWithType(const BookDatabase<T> &cont, Args &&...args) {
 
 template <BookContainerLike T, typename Comparator = TransparentStringLess>
 auto buildAuthorHistogramFlat(const BookDatabase<T> &cont, Comparator comp = {}) {
-    return buildAuthorHistogramWithType<boost::container::flat_map<std::string_view, size_t, Comparator>>(cont, comp);
+    return buildAuthorHistogramWithType<std::flat_map<std::string_view, size_t, Comparator>>(cont, comp);
 }
 
 template <BookContainerLike T>
@@ -37,13 +36,13 @@ auto buildAuthorHistogram(const BookDatabase<T> &cont) {
 
 template <BookContainerLike T>
 auto calculateGenreRatings(const BookDatabase<T> &cont) {
-    boost::container::flat_map<Genre, double> total_rating;
-    boost::container::flat_map<Genre, size_t> books_count;
+    std::flat_map<Genre, double> total_rating;
+    std::flat_map<Genre, size_t> books_count;
     for (const auto &book : cont) {
         total_rating[book.genre] += book.rating;
         ++books_count[book.genre];
     }
-    boost::container::flat_map<Genre, double> result;
+    std::flat_map<Genre, double> result;
     for (auto genre : total_rating | std::views::keys) {
         result[genre] += total_rating[genre] / static_cast<double>(books_count[genre]);
     }

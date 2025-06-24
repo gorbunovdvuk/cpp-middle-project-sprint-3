@@ -66,9 +66,9 @@ TEST(StatisticsTest, GetTopNBy) {
         auto result = getTopNBy(books, 2, comp::GreaterByRating{});
         EXPECT_EQ(result.size(), 2);
         EXPECT_EQ(std::format<const Book &>("{}", result[0]),
-                  "{\"Haruki Murakami\", \"1Q84\", 2009, Genre::Fiction, 85, 150}");
+                  "{\"Agatha Christie\", \"The Murder of Roger Ackroyd\", 1926, Genre::Mystery, 89, 220}");
         EXPECT_EQ(std::format<const Book &>("{}", result[1]),
-                  "{\"Isaac Asimov\", \"The Caves of Steel\", 1953, Genre::SciFi, 87, 120}");
+                  "{\"Agatha Christie\", \"Death on the Nile\", 1937, Genre::Mystery, 88, 210}");
     }
 }
 

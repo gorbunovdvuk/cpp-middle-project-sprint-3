@@ -20,11 +20,11 @@ struct GreaterByRating {
     using is_transparent = std::true_type;
 
     constexpr bool operator()(const Book& lhs, const Book& rhs) const {
-        return lhs.rating < rhs.rating;
+        return lhs.rating > rhs.rating;
     }
 
     constexpr bool operator()(const Book& lhs, double rhs) const {
-        return lhs.rating < rhs;
+        return lhs.rating > rhs;
     }
 };
 
